@@ -4,6 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import '../utils/colors.dart';
 import '../widgets/text_field_input.dart';
 
+import '../resources/auth_methods.dart';
+
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
@@ -12,12 +14,6 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<SignupScreen> {
-
-void sample()
-{
-
-}
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
@@ -56,8 +52,8 @@ void sample()
           // circular widget to accept and show our select file
 
           Stack(
-            children:  [
-             const CircleAvatar(
+            children: [
+              const CircleAvatar(
                 radius: 64,
                 backgroundImage: NetworkImage(
                     'https://img.freepik.com/free-psd/logo-mockup_35913-2089.jpg?w=2000'),
@@ -66,8 +62,10 @@ void sample()
                 bottom: -10,
                 right: 2,
                 child: IconButton(
-                  onPressed:(){},
-                  icon: const Icon(Icons.add_a_photo , ),
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.add_a_photo,
+                  ),
                 ),
               )
             ],
@@ -107,6 +105,14 @@ void sample()
             height: 20,
           ),
           InkWell(
+            onTap: () async {
+              String res = await AuthMethod().signUpUser(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                  username: _usernameController.text,
+                  bio: _bioController.text);
+              print(res);
+            },
             child: Container(
               child: const Text('Login'),
               width: double.infinity,
