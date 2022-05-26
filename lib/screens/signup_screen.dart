@@ -1,8 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:instagram_flutter/utils/utils.dart';
 
 import '../utils/colors.dart';
 import '../widgets/text_field_input.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../resources/auth_methods.dart';
 
@@ -19,6 +23,8 @@ class _LoginScreenState extends State<SignupScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
 
+  Uint8List? _image;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -27,6 +33,14 @@ class _LoginScreenState extends State<SignupScreen> {
     _usernameController.dispose();
 
     super.dispose();
+  }
+
+  void selectImage() async {
+    Uint8List img = await pickImage(ImageSource.gallery);
+
+    setState(() {
+      _image = img;
+    });
   }
 
   @override
@@ -53,16 +67,18 @@ class _LoginScreenState extends State<SignupScreen> {
 
           Stack(
             children: [
-              const CircleAvatar(
+         _image!=null?  CircleAvatar(
+                radius: 64,
+                backgroundImage: MemoryImage(_image!) )   : const CircleAvatar(
                 radius: 64,
                 backgroundImage: NetworkImage(
-                    'https://img.freepik.com/free-psd/logo-mockup_35913-2089.jpg?w=2000'),
+                    'https://cdn5.vectorstock.com/i/thumb-large/13/04/male-profile-picture-vector-2041304.jpg'),
               ),
               Positioned(
                 bottom: -10,
                 right: 2,
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: selectImage,
                   icon: const Icon(
                     Icons.add_a_photo,
                   ),
@@ -110,7 +126,9 @@ class _LoginScreenState extends State<SignupScreen> {
                   email: _emailController.text,
                   password: _passwordController.text,
                   username: _usernameController.text,
-                  bio: _bioController.text);
+                  bio: _bioController.text,
+                  file: _image!,
+                  );
               print(res);
             },
             child: Container(
