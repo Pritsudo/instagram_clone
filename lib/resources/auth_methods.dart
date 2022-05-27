@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../resources/storage_methods.dart';
+import '../model/user.dart' as model;
 
 class AuthMethod {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -33,15 +34,16 @@ class AuthMethod {
 
         // add user to database
 
-        await _firestore.collection('users').doc(cred.user!.uid).set({
-          'username': username,
-          'uid': cred.user!.uid,
-          'email': email,
-          'bio': bio,
-          'followers': [],
-          'following': [],
-          'photoUrl': photoUrl,
-        });
+        model.User user = model.User(
+            email: email,
+            photoUrl: photoUrl,
+            uid: cred.user!.uid,
+            username: username,
+            bio: bio,
+            followers: [],
+            following: []);
+
+        await _firestore.collection('users').doc(cred.user!.uid).set(user.toJson());
         res = "Success";
       }
     } on FirebaseAuthException catch (err) {
@@ -63,10 +65,7 @@ class AuthMethod {
       } else {
         res = 'Please enter all the fields';
       }
-      
-    } 
-     
-    catch (err) {
+    } catch (err) {
       res = err.toString();
     }
 
