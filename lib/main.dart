@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_flutter/responsive/mobile_screen_layout.dart';
@@ -13,13 +14,14 @@ void main() async {
 
   if (kIsWeb) {
     await Firebase.initializeApp(
-        options: FirebaseOptions(
-            apiKey: "AIzaSyDM23CzRb8_YTslGTa-eMWyJYWvNQQJPYo",
-            appId: "1:14570348753:web:0ca05be3378034c6d665f0",
-            messagingSenderId: "14570348753",
-            projectId: "instagram-clone-f729b",
-            storageBucket: "instagram-clone-f729b.appspot.com",),
-            );
+      options: FirebaseOptions(
+        apiKey: "AIzaSyDM23CzRb8_YTslGTa-eMWyJYWvNQQJPYo",
+        appId: "1:14570348753:web:0ca05be3378034c6d665f0",
+        messagingSenderId: "14570348753",
+        projectId: "instagram-clone-f729b",
+        storageBucket: "instagram-clone-f729b.appspot.com",
+      ),
+    );
   } else {
     await Firebase.initializeApp();
   }
@@ -36,16 +38,36 @@ class MyApp extends StatelessWidget {
         title: 'Instagram Clone',
         theme: ThemeData.dark()
             .copyWith(scaffoldBackgroundColor: mobileBackgroundColor),
-        home:
-        // LoginScreen(),
-        SignupScreen(),
+        home: SignupScreen()
+        // 
+        // StreamBuilder(
+        //   builder: (context, snapshot) {
+        //     if (snapshot.connectionState == ConnectionState.active) {
+        //       if (snapshot.hasData) {
+        //         return const ResponsiveLayout(
+        //             webScreenLayout: WebScreenLayout(),
+        //             mobileScreenLayout: MobileScreenLayout());
+        //       }
+        //     } else if (snapshot.hasError) {
+        //       return Center(
+        //         child: Text('${snapshot.error}'),
+        //       );
+        //     }
+        //     if (snapshot.connectionState == ConnectionState.waiting) {
+        //       return Center(
+        //         child: CircularProgressIndicator(color: primaryColor),
+        //       );
+        //     }
+        //     return LoginScreen();
+        //   },
+        //   stream: FirebaseAuth.instance.authStateChanges(),
+        // )
+
         //  Scaffold(
         //   appBar: AppBar(),
-        //   body: const ResponsiveLayout(
-        //       webScreenLayout: WebScreenLayout(),
-        //       mobileScreenLayout: MobileScreenLayout()),
+        //   body:
         // )
-        
+
         );
   }
 }
