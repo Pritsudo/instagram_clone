@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_flutter/resources/auth_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/utils.dart';
 import 'package:instagram_flutter/widgets/text_field_input.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -20,6 +23,23 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
 
     super.dispose();
+  }
+
+  void loginUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethod().loginUser(
+        email: _emailController.text, password: _passwordController.text);
+    if (res == 'success') {
+       
+     
+    } else {
+      showSnackBar(res, context);
+    }
+   setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -57,8 +77,9 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 20,
           ),
           InkWell(
+            onTap: loginUser,
             child: Container(
-              child: const Text('Login'),
+              child: _isLoading? const Center(child: CircularProgressIndicator(color: primaryColor,)) : const Text('Login'), 
               width: double.infinity,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -69,32 +90,32 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-         const SizedBox(height: 10,),
-
-         Flexible(
+          const SizedBox(
+            height: 10,
+          ),
+          Flexible(
             child: Container(),
             flex: 1,
           ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-           Container(
-             child:const Text("Don't have an account?"),
-             padding: const EdgeInsets.symmetric(vertical: 8),
-           ),
-           
-           GestureDetector(
-             onTap: (){},
-             child: Container(
-               child:const Text("Sign up" , style: TextStyle(
-                 fontWeight: FontWeight.bold
-               ),),
-               padding: const EdgeInsets.symmetric(vertical: 8),
-             ),
-           ),
-          ],
-        )
-
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                child: const Text("Don't have an account?"),
+                padding: const EdgeInsets.symmetric(vertical: 8),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  child: const Text(
+                    "Sign up",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     )));

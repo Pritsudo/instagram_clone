@@ -24,6 +24,7 @@ class _LoginScreenState extends State<SignupScreen> {
   final TextEditingController _usernameController = TextEditingController();
 
   Uint8List? _image;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -33,6 +34,26 @@ class _LoginScreenState extends State<SignupScreen> {
     _usernameController.dispose();
 
     super.dispose();
+  }
+
+  void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethod().signUpUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+      username: _usernameController.text,
+      bio: _bioController.text,
+      file: _image!,
+    );
+
+    if (res != 'success') {
+      showSnackBar(res, context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void selectImage() async {
@@ -67,13 +88,14 @@ class _LoginScreenState extends State<SignupScreen> {
 
           Stack(
             children: [
-         _image!=null?  CircleAvatar(
-                radius: 64,
-                backgroundImage: MemoryImage(_image!) )   : const CircleAvatar(
-                radius: 64,
-                backgroundImage: NetworkImage(
-                    'https://cdn5.vectorstock.com/i/thumb-large/13/04/male-profile-picture-vector-2041304.jpg'),
-              ),
+              _image != null
+                  ? CircleAvatar(
+                      radius: 64, backgroundImage: MemoryImage(_image!))
+                  : const CircleAvatar(
+                      radius: 64,
+                      backgroundImage: NetworkImage(
+                          'https://cdn5.vectorstock.com/i/thumb-large/13/04/male-profile-picture-vector-2041304.jpg'),
+                    ),
               Positioned(
                 bottom: -10,
                 right: 2,
@@ -83,7 +105,8 @@ class _LoginScreenState extends State<SignupScreen> {
                     Icons.add_a_photo,
                   ),
                 ),
-              )
+              ),
+              
             ],
           ),
 
@@ -121,18 +144,15 @@ class _LoginScreenState extends State<SignupScreen> {
             height: 20,
           ),
           InkWell(
-            onTap: () async {
-              String res = await AuthMethod().signUpUser(
-                  email: _emailController.text,
-                  password: _passwordController.text,
-                  username: _usernameController.text,
-                  bio: _bioController.text,
-                  file: _image!,
-                  );
-              print(res);
-            },
+            onTap: signUpUser,
             child: Container(
-              child: const Text('Login'),
+              child:  _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: primaryColor,
+                          ),
+                        )
+                      :  const Text('Login'),
               width: double.infinity,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -160,10 +180,10 @@ class _LoginScreenState extends State<SignupScreen> {
               GestureDetector(
                 onTap: () {},
                 child: Container(
-                  child: const Text(
-                    "Sign up",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  child:const Text(
+                          "Sign up",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
               ),
