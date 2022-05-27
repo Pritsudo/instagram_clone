@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_flutter/resources/auth_methods.dart';
+import 'package:instagram_flutter/responsive/web_screen_layout.dart';
+import 'package:instagram_flutter/screens/signup_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 import 'package:instagram_flutter/widgets/text_field_input.dart';
+
+import '../responsive/mobile_screen_layout.dart';
+import '../responsive/responcive_layout_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -32,7 +37,10 @@ class _LoginScreenState extends State<LoginScreen> {
     String res = await AuthMethod().loginUser(
         email: _emailController.text, password: _passwordController.text);
     if (res == 'success') {
-       
+        Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => ResponsiveLayout(
+                    webScreenLayout: WebScreenLayout(),
+                    mobileScreenLayout: MobileScreenLayout())));
      
     } else {
       showSnackBar(res, context);
@@ -40,6 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
    setState(() {
       _isLoading = false;
     });
+  }
+
+  void navigateToSignup()
+  {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignupScreen()));
   }
 
   @override
