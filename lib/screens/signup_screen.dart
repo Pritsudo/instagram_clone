@@ -108,7 +108,8 @@ class _LoginScreenState extends State<SignupScreen> {
                       radius: 64, backgroundImage: MemoryImage(_image!))
                   : const CircleAvatar(
                       radius: 64,
-                      backgroundImage: NetworkImage(
+                      backgroundImage:
+                      NetworkImage(
                           'https://cdn5.vectorstock.com/i/thumb-large/13/04/male-profile-picture-vector-2041304.jpg'),
                     ),
               Positioned(
