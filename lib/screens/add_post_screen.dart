@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_flutter/provider/user_provider.dart';
+import 'package:instagram_flutter/resources/firestore_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,30 @@ class AddPostScreen extends StatefulWidget {
 
 class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
+  final TextEditingController _descriptionController = TextEditingController();
+  bool _isLoading = false;
+
+  void postImage(String uid, String username, String profileImage) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      String res = await FireStoreMethods().uploadPost(
+          _descriptionController.text, _file!, uid, username, profileImage);
+
+      if (res == "success") {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar('Posted successfully', context);
+        clearImage();
+      } else {
+        showSnackBar(res, context);
+      }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+  }
 
   _selectImage(BuildContext context) async {
     return showDialog(
@@ -48,30 +73,51 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   });
                 },
               ),
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Cancel'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                },
+              ),
             ],
           );
         });
   }
 
+  void clearImage() {
+    setState(() {
+      _file = null;
+    });
+  }
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    final md.User user = Provider.of<UserProvider>(context).getUser ;
+    final md.User user = Provider.of<UserProvider>(context).getUser;
     return _file == null
         ? Center(
-            child: IconButton(onPressed: () {}, icon: Icon(Icons.upload)),
+            child: IconButton(
+                onPressed: () => _selectImage(context),
+                icon: Icon(Icons.upload)),
           )
         : Scaffold(
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
-              leading: IconButton(
-                  onPressed: () => _selectImage(context),
-                  icon: Icon(Icons.arrow_back)),
+              leading:
+                  IconButton(onPressed: clearImage, icon: Icon(Icons.arrow_back)),
               title: const Text('Post to'),
               centerTitle: false,
               actions: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () =>
+                      postImage(user.uid, user.username, user.photoUrl),
                   child: const Text(
                     'Post',
                     style: TextStyle(
@@ -84,16 +130,21 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ),
             body: Column(
               children: [
+                _isLoading
+                    ? LinearProgressIndicator()
+                    : const Padding( 
+                        padding: EdgeInsets.only(top: 0),
+                        child: Divider(),
+                      ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(
-                      user.photoUrl )                    ),
+                    CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: TextField(
+                        controller: _descriptionController,
                         decoration: InputDecoration(
                           hintText: 'Write a caption',
                           border: InputBorder.none,
@@ -109,9 +160,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: NetworkImage(
-                                    'https://images.unsplash.com/photo-1653954728092-4268b4f08d6c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=1000&q=60',
-                                  ),
+                                  image: MemoryImage(_file!),
                                   fit: BoxFit.fill,
                                   alignment: FractionalOffset.topCenter)),
                         ),
