@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CommentCard extends StatefulWidget {
-  CommentCard({Key? key}) : super(key: key);
+  final snap;
+  CommentCard({Key? key , required this.snap}) : super(key: key);
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -16,7 +18,7 @@ class _CommentCardState extends State<CommentCard> {
         children: [
           CircleAvatar(
             backgroundImage: NetworkImage(
-                'https://images.unsplash.com/photo-1654720110542-dddee085756f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60'),
+                widget.snap['profilePic']),
             radius: 18,
           ),
           Expanded(
@@ -29,23 +31,31 @@ class _CommentCardState extends State<CommentCard> {
                   RichText(
                       text: TextSpan(children: [
                     TextSpan(
-                      text: 'username',
+                      text: widget.snap['name'],
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
-                      text: ' some description to insert',
+                      text:  ' ${widget.snap['message']}',
                     ),
                   ])),
-                  Padding(padding: const EdgeInsets.only(top: 4), 
-                  
-                  child: Text('23/4151/00',style:TextStyle(fontSize: 12, fontWeight: FontWeight.w400),),
-                  )],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text( DateFormat.yMMMd().format(widget.snap['datePublished'].toDate()) 
+                     ,
+                      style:
+                         const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                    ),
+                  )
+                ],
               ),
             ),
           ),
           Container(
             padding: const EdgeInsets.all(8),
-            child: const Icon(Icons.favorite,size: 16,  ),
+            child: const Icon(
+              Icons.favorite,
+              size: 16,
+            ),
           )
         ],
       ),
