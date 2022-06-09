@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_flutter/screens/comments_screen.dart';
 
 
 import '../utils/colors.dart';
@@ -32,7 +33,7 @@ class _FeedScreenState extends State<FeedScreen> {
               Icons.messenger_outline,
               color: primaryColor,
             ),
-            onPressed: () {},
+            onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context)=>CommentsScreen())),
           ),
         ],
       ),
