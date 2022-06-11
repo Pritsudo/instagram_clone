@@ -35,7 +35,7 @@ class _CommentCardState extends State<CommentCard> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
-                      text:  ' ${widget.snap['message']}',
+                      text:  ' ${widget.snap['comment']}',
                     ),
                   ])),
                   Padding(
