@@ -37,22 +37,21 @@ class _LoginScreenState extends State<LoginScreen> {
     String res = await AuthMethod().loginUser(
         email: _emailController.text, password: _passwordController.text);
     if (res == 'success') {
-        Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => ResponsiveLayout(
-                    webScreenLayout: WebScreenLayout(),
-                    mobileScreenLayout: MobileScreenLayout())));
-     
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => ResponsiveLayout(
+              webScreenLayout: WebScreenLayout(),
+              mobileScreenLayout: MobileScreenLayout())));
     } else {
       showSnackBar(res, context);
     }
-   setState(() {
+    setState(() {
       _isLoading = false;
     });
   }
 
-  void navigateToSignup()
-  {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignupScreen()));
+  void navigateToSignup() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => SignupScreen()));
   }
 
   @override
@@ -92,7 +91,12 @@ class _LoginScreenState extends State<LoginScreen> {
           InkWell(
             onTap: loginUser,
             child: Container(
-              child: _isLoading? const Center(child: CircularProgressIndicator(color: primaryColor,)) : const Text('Login'), 
+              child: _isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                      color: primaryColor,
+                    ))
+                  : const Text('Login'),
               width: double.infinity,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -118,7 +122,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 8),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  navigateToSignup();
+                },
                 child: Container(
                   child: const Text(
                     "Sign up",
