@@ -4,6 +4,7 @@ import 'package:instagram_flutter/resources/auth_methods.dart';
 import 'package:instagram_flutter/responsive/web_screen_layout.dart';
 import 'package:instagram_flutter/screens/signup_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/global_variables.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 import 'package:instagram_flutter/widgets/text_field_input.dart';
 
@@ -36,12 +37,21 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     String res = await AuthMethod().loginUser(
         email: _emailController.text, password: _passwordController.text);
-    if (res == 'success') {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
+    if (res == "Success") {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
           builder: (context) => ResponsiveLayout(
               webScreenLayout: WebScreenLayout(),
-              mobileScreenLayout: MobileScreenLayout())));
-    } else {
+              mobileScreenLayout: MobileScreenLayout()
+              ),),
+             (route) => false
+              );
+               setState(() {
+      _isLoading = false;
+    });
+    } 
+   
+    else {
       showSnackBar(res, context);
     }
     setState(() {
@@ -59,7 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         body: SafeArea(
             child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 30),
+      padding: MediaQuery.of(context).size.width > webScreenSize
+          ? EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 3)
+          : const EdgeInsets.symmetric(horizontal: 30),
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

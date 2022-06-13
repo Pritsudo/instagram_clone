@@ -52,7 +52,7 @@ class _LoginScreenState extends State<SignupScreen> {
       file: _image!,
     );
 
-    if (res != 'success') {
+    if (res != 'Success') {
       showSnackBar(res, context);
     }
     else{
