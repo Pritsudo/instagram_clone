@@ -1,18 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram_flutter/utils/colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_flutter/utils/global_variables.dart';
 
-class MobileScreenLayout extends StatefulWidget {
-  const MobileScreenLayout({Key? key}) : super(key: key);
+import '../utils/colors.dart';
+
+class WebScreenLayout extends StatefulWidget {
+  const WebScreenLayout({Key? key}) : super(key: key);
 
   @override
-  State<MobileScreenLayout> createState() => _MobileScreenLayoutState();
+  State<WebScreenLayout> createState() => _WebScreenLayoutState();
 }
 
-class _MobileScreenLayoutState extends State<MobileScreenLayout> {
+class _WebScreenLayoutState extends State<WebScreenLayout> {
   int _page = 0;
 
   late PageController pageController;
@@ -33,71 +32,71 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
 
   void navigationTapped(int page) {
     pageController.jumpToPage(page);
+    setState(() {
+    _page = page;
+    });
   }
 
   void onPagedChanged(int page) {
     setState(() {
-      
     _page = page;
     });
-  } 
-
-  String username = '';
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        children: homeScreenItems,
-        physics: NeverScrollableScrollPhysics(),
-        controller: pageController,
-        onPageChanged: onPagedChanged,
-      ),
-      bottomNavigationBar: CupertinoTabBar(
+      appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
-        items: [
-          BottomNavigationBarItem(
+        centerTitle: false,
+        title: SvgPicture.asset(
+          'assets/ic_instagram.svg',
+          color: primaryColor,
+          height: 32,
+        ),
+        actions: [
+         IconButton(
             icon: Icon(
               Icons.home,
               color: _page == 0 ? primaryColor : secondaryColor,
             ),
-            label: '',
-            backgroundColor: primaryColor,
+            onPressed: () => navigationTapped(0),
           ),
-          BottomNavigationBarItem(
+          IconButton(
             icon: Icon(
               Icons.search,
               color: _page == 1 ? primaryColor : secondaryColor,
             ),
-            label: '',
-            backgroundColor: primaryColor,
+            onPressed: () => navigationTapped(1),
           ),
-          BottomNavigationBarItem(
+          IconButton(
             icon: Icon(
-              Icons.add_circle,
+              Icons.add_a_photo,
               color: _page == 2 ? primaryColor : secondaryColor,
             ),
-            label: '',
-            backgroundColor: primaryColor,
+            onPressed: () => navigationTapped(2),
           ),
-          BottomNavigationBarItem(
+          IconButton(
             icon: Icon(
               Icons.favorite,
               color: _page == 3 ? primaryColor : secondaryColor,
             ),
-            label: '',
-            backgroundColor: primaryColor,
+            onPressed: () => navigationTapped(3),
           ),
-          BottomNavigationBarItem(
+          IconButton(
             icon: Icon(
               Icons.person,
               color: _page == 4 ? primaryColor : secondaryColor,
             ),
-            label: '',
-            backgroundColor: primaryColor,
+            onPressed: () => navigationTapped(4),
           ),
         ],
-        onTap: navigationTapped,
+      ),
+      body: PageView(
+        physics:const NeverScrollableScrollPhysics(),
+        children: homeScreenItems,
+        controller: pageController,
+        onPageChanged: onPagedChanged,
       ),
     );
   }
